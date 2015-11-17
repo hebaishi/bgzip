@@ -14,14 +14,11 @@ enum FileType {
     TYPE_GZIP, TYPE_BZIP2, TYPE_UNKNOWN
 };
 
+namespace ZipReader {
+
 FileType detectCompression(std::string);
 
-class ZipReader{
-public:
-    ZipReader();
-    ZipReader(const std::string);
-    void DeCompress(const std::string, const std::string, FileType);
-    void Compress(const std::string, const std::string, FileType);
-private:
-    ifstream _input_file;
-};
+void DeCompress(const std::string, const std::string, FileType);
+void Compress(const std::string, const std::string, FileType);
+
+}

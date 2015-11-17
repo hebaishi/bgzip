@@ -11,7 +11,6 @@ const vector <char> GZIP_SIGNATURE = {31, -117, 8};
 const vector <char> BZIP2_SIGNATURE = {'B', 'Z', 'h'};
 const int HEADER_SIZE = 3;
 
-ZipReader::ZipReader (){};
 
 void ZipReader::DeCompress(const std::string input_filename, const std::string output_filename, FileType compression_format) {
 	ifstream input_file(input_filename);

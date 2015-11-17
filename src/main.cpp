@@ -16,6 +16,8 @@ void printUsage() {
 int main(int argc, char const *argv[]) {
     if (argc == 1) {
         printUsage();
+    std::thread t(ZipReader::DeCompress, "/tmp/words.gz", "/tmp/words.txt", FileType::TYPE_GZIP);
+    t.join();
     }
     return 0;
 }
