@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 2.6)
+project(bgzip)
+
+option (UNIT_TEST "Run Unit-tests" OFF)
+option (BOOST "Boost library support" ON)
+set(CMAKE_CXX_FLAGS "-Wall -O3 -std=c++0x")
+# set(CMAKE_CXX_FLAGS "-std=c++11 -g -O0")
+# add_subdirectory(tests)
+
+add_executable(${PROJECT_NAME} ./src/main.cpp ./src/zipreader.cpp)
+if (BOOST)
+    target_link_libraries(${PROJECT_NAME} boost_iostreams)
+endif()
