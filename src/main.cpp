@@ -6,7 +6,16 @@ using namespace std;
 
 using namespace boost::iostreams;
 
+void printUsage() {
+    cout << "Usage: bgzip [-cgz/-cbz2/-d] file1 file2 file3 ...\n";
+    cout << "-cgz: Gzip compress files \n";
+    cout << "-cbz2: Bzip2 compress files\n";
+    cout << "-d: Decompress files (autodetect format)\n";
+}
+
 int main(int argc, char const *argv[]) {
-    string input_file;
+    if (argc == 1) {
+        printUsage();
+    }
     return 0;
 }
