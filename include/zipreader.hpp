@@ -20,8 +20,8 @@ class ZipReader{
 public:
     ZipReader();
     ZipReader(const std::string);
-    void DeCompress(const std::string, const std::string);
-    void Compress(const std::string, const std::string);
+    void DeCompress(const std::string, const std::string, FileType);
+    void Compress(const std::string, const std::string, FileType);
 private:
     ifstream _input_file;
 };

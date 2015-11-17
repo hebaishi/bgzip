@@ -13,30 +13,29 @@ const int HEADER_SIZE = 3;
 
 ZipReader::ZipReader (){};
 
-void ZipReader::DeCompress(const std::string input_filename, const std::string output_filename) {
-	FileType type = detectCompression(input_filename);
-	ifstream input_file;
+void ZipReader::DeCompress(const std::string input_filename, const std::string output_filename, FileType compression_format) {
+	ifstream input_file(input_filename);
 	boost::iostreams::filtering_istream compFilter;
-	input_file.open(input_filename, std::ios_base::in | std::ios_base::binary);
-	if (type == FileType::TYPE_GZIP) {
+	if (compression_format == FileType::TYPE_GZIP) {
     	compFilter.push (boost::iostreams::gzip_decompressor());
-    } else if (type == FileType::TYPE_BZIP2) {
+    } else if (compression_format == FileType::TYPE_BZIP2) {
     	compFilter.push (boost::iostreams::bzip2_decompressor());
     }
     compFilter.push (input_file);
-	vector <char> byte_vector(2048);
-	// ofstream oF("output.txt");
-		boost::iostreams::copy(compFilter, cout);
+	ofstream output_stream(output_filename);
+	boost::iostreams::copy(compFilter, output_stream);
 }
 
-void ZipReader::Compress(const std::string input_filename, const std::string output_filename) {
-	ofstream output_file;
+void ZipReader::Compress(const std::string input_filename, const std::string output_filename, FileType compression_format) {
+	ifstream input_file(input_filename);
 	boost::iostreams::filtering_ostream compFilter;
-	output_file.open(input_filename, std::ios_base::out | std::ios_base::binary);
-	compFilter.push (boost::iostreams::gzip_compressor());
+	if (compression_format == FileType::TYPE_GZIP) {
+    	compFilter.push (boost::iostreams::gzip_compressor());
+    } else if (compression_format == FileType::TYPE_BZIP2) {
+    	compFilter.push (boost::iostreams::bzip2_compressor());
+    }
+	ofstream output_file(output_filename);
 	compFilter.push (output_file);
-	vector <char> byte_vector(2048);
-	// ofstream oF("output.txt");
 	boost::iostreams::copy(cin, compFilter);
 }
 
