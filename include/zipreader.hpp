@@ -1,3 +1,4 @@
+
 #include <fstream>
 #include <boost/iostreams/device/file.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
@@ -10,15 +11,17 @@
 using std::ifstream;
 using std::string;
 
-enum FileType {
-    TYPE_GZIP, TYPE_BZIP2, TYPE_UNKNOWN
-};
+enum FileType { TYPE_GZIP, TYPE_BZIP2, TYPE_UNKNOWN };
 
 namespace ZipReader {
 
-FileType detectCompression(std::string);
-
 void DeCompress(const std::string, const std::string, FileType);
 void Compress(const std::string, const std::string, FileType);
+
+void addDecompressor(std::string, boost::iostreams::filtering_istream &);
+void addCompressor(boost::iostreams::filtering_ostream &, FileType);
+
+string getDecompressedFilename(string &, FileType);
+string getCompressedFilename(string &, FileType);
 
 }
