@@ -13,19 +13,21 @@ const int HEADER_SIZE = 3;
 
 namespace ZipReader {
 
-void DeCompress(const std::string input_filename, const std::string output_filename, FileType compression_format) {
+void DeCompress(std::string input_filename) {
 	ifstream input_file(input_filename);
 	boost::iostreams::filtering_istream compFilter;
-	addDecompressor(input_filename, compFilter);
+	FileType compression_format = addDecompressor(input_filename, compFilter);
     compFilter.push (input_file);
+	string output_filename = getDecompressedFilename(input_filename, compression_format);
 	ofstream output_stream(output_filename);
 	boost::iostreams::copy(compFilter, output_stream);
 }
 
-void Compress(const std::string input_filename, const std::string output_filename, FileType compression_format) {
+void Compress(std::string input_filename, FileType compression_format) {
 	ifstream input_file(input_filename);
 	boost::iostreams::filtering_ostream compFilter;
 	addCompressor(compFilter, compression_format);
+	string output_filename = getCompressedFilename(input_filename, compression_format);
 	ofstream output_file(output_filename);
 	compFilter.push (output_file);
 	boost::iostreams::copy(input_file, compFilter);
@@ -36,7 +38,7 @@ void Compress(const std::string input_filename, const std::string output_filenam
  * @param  filename filename
  * @return          Type: Gzip / Bzip2 / Unknown(Uncompressed)
  */
-void addDecompressor(std::string filename, boost::iostreams::filtering_istream & compression_filter) {
+FileType addDecompressor(std::string filename, boost::iostreams::filtering_istream & compression_filter) {
 	ifstream input_file;
 	try {
 		input_file.open(filename);
@@ -46,12 +48,16 @@ void addDecompressor(std::string filename, boost::iostreams::filtering_istream &
 	}
 	vector <char> byte_vector(HEADER_SIZE);
 	input_file.read(byte_vector.data(), HEADER_SIZE);
-    if (byte_vector == GZIP_SIGNATURE) {
+	FileType type = FileType::TYPE_UNKNOWN;
+	if (byte_vector == GZIP_SIGNATURE) {
     	compression_filter.push(boost::iostreams::gzip_decompressor());
+		type = FileType::TYPE_GZIP;
     } else if (byte_vector == BZIP2_SIGNATURE) {
     	compression_filter.push(boost::iostreams::bzip2_decompressor());
+		type = FileType::TYPE_BZIP2;
 	}
     input_file.close();
+	return type;
 }
 
 void addCompressor(boost::iostreams::filtering_ostream & compression_filter, FileType type) {
